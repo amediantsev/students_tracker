@@ -1,10 +1,9 @@
 from django.core.management.base import BaseCommand, CommandError
-from students.models import Student
+from teachers.models import Teacher
 
 class Command(BaseCommand):
-    help = 'Generate 100 random students'
+    help = 'Generate 100 random teachers'
 
     def handle(self, *args, **options):
         for _ in range(100):
-            Student.generate_student()
-
+            Teacher.generate_teacher()

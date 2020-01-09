@@ -1,8 +1,10 @@
 from datetime import datetime
 from django.db import models
 from faker import Faker
-
+import random
 fake = Faker()
+
+specializations = ['biology', 'physics', 'chemistry', 'mathematics', 'psychology', 'linguistics', 'organizations', 'computer_science', 'history']
 
 class Student(models.Model):
     first_name = models.CharField(max_length=20)
@@ -31,5 +33,17 @@ class Student(models.Model):
 class Group(models.Model):
     specialization = models.CharField(max_length=64)
     study_start_year = models.CharField(max_length=4)
-    unique_code = models.CharField(max_length=10)
-    quantity_of_students = models.CharField(max_length=3)       # в будущем будет высчитываться автоматически
+    quantity_of_students = models.PositiveIntegerField()       # в будущем будет высчитываться автоматически
+
+    def get_info(self):
+        return f'{self.study_start_year}, {self.specialization}'
+
+    @classmethod
+    def generate_group(cls):
+        group = cls(specialization=random.choice(specializations),
+                    study_start_year=random.randrange(2000, 2019),
+                    quantity_of_students=random.randrange(1,999),
+                    )
+
+        group.save()
+        return group
