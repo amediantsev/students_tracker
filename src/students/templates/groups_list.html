@@ -5,13 +5,16 @@
     <title>Title</title>
 </head>
 <body>
+<a href="{% url 'groups-add' %}"><input type="button" value=" Add a group "></a>
 
-<form action="/groups/" method="get">
+<h2>Search the group:</h2>
+<form action="{% url 'groups' %}" method="get">
     <input name="specialization">
     <input name="submit" type="submit">
 </form>
-
-{{ groups_list|safe }}
-
+<h2>Groups:</h2>
+{% for group in groups_list %}
+    <p><a href="{% url 'groups-edit' pk=group.pk %}">{{ group.get_info }}</a></p>
+{% endfor %}
 </body>
 </html>

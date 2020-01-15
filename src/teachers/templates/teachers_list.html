@@ -5,13 +5,16 @@
     <title>Title</title>
 </head>
 <body>
+<a href="{% url 'teachers-add' %}"><input type="button" value=" Add a teacher "></a>
 
-<form action="/teachers/" method="get">
+<h2>Search the teacher:</h2>
+<form action="{% url 'teachers' %}" method="get">
     <input name="fn_ln_email">
     <input name="submit" type="submit">
 </form>
-
-{{ teachers_list|safe }}
-
+<h2>Teachers:</h2>
+{% for teacher in teachers_list %}
+    <p><a href="{% url 'teachers-edit' pk=teacher.pk %}">{{ teacher.get_info }}</a></p>
+{% endfor %}
 </body>
 </html>
