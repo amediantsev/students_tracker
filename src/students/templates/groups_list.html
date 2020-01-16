@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}
+Groups list
+{% endblock title %}
+
+{% block content %}
 <a href="{% url 'groups-add' %}"><input type="button" value=" Add a group "></a>
 
 <h2>Search the group:</h2>
@@ -12,9 +12,22 @@
     <input name="specialization">
     <input name="submit" type="submit">
 </form>
-<h2>Groups:</h2>
-{% for group in groups_list %}
-    <p><a href="{% url 'groups-edit' pk=group.pk %}">{{ group.get_info }}</a></p>
-{% endfor %}
-</body>
-</html>
+
+<table border="1" width=100%}>
+    <caption>Groups list</caption>
+    <tr>
+        <th>Specialization</th>
+        <th>Study start year</th>
+        <th>Edition</th>
+    </tr>
+    {% for group in groups_list %}
+        <tr>
+            <td>{{ group.specialization }}</td>
+            <td>{{ group.study_start_year }}</td>
+            <td><a href="{% url 'groups-edit' group.id %}">Edit the group</a></td>
+        </tr>
+    {% endfor %}
+
+</table>
+
+{% endblock content %}

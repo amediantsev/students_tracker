@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}
+Teachers list
+{% endblock title %}
+
+{% block content %}
 <a href="{% url 'teachers-add' %}"><input type="button" value=" Add a teacher "></a>
 
 <h2>Search the teacher:</h2>
@@ -12,9 +12,24 @@
     <input name="fn_ln_email">
     <input name="submit" type="submit">
 </form>
-<h2>Teachers:</h2>
-{% for teacher in teachers_list %}
-    <p><a href="{% url 'teachers-edit' pk=teacher.pk %}">{{ teacher.get_info }}</a></p>
-{% endfor %}
-</body>
-</html>
+
+<table border="1" width=75% align="center">
+    <caption>Teachers list</caption>
+    <tr>
+        <th>First name</th>
+        <th>Last_name</th>
+        <th>Email</th>
+        <th>Edition</th>
+    </tr>
+    {% for teacher in teachers_list %}
+        <tr>
+            <td>{{ teacher.first_name }}</td>
+            <td>{{ teacher.last_name }}</td>
+            <td>{{ teacher.email }}</td>
+            <td><a href="{% url 'teachers-edit' teacher.id %}">Edit the teacher</a></td>
+        </tr>
+    {% endfor %}
+
+</table>
+
+{% endblock content %}

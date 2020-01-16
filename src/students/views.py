@@ -19,7 +19,7 @@ def students(request):
 
     return render(request,
                   'students_list.html',
-                  context={'students_list': queryset}
+                  context={'students': queryset}
                   )
 
 
