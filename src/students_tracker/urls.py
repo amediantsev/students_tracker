@@ -14,8 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-
+from django.conf import settings
 from django.urls import path, include
+from django.conf.urls import url
 
 
 urlpatterns = [
@@ -23,3 +24,10 @@ urlpatterns = [
     path('community/', include('students.urls')),
     path('teachers/', include('teachers.urls')),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns += [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ]
