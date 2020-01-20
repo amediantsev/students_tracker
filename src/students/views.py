@@ -1,8 +1,9 @@
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render
+from django.urls import reverse
+
 from students.models import Student, Group
 from students.forms import StudentsAddForm, ContactForm, GroupsAddForm
-from django.urls import reverse
 
 
 def gen_stud(request):
@@ -11,7 +12,7 @@ def gen_stud(request):
 
 
 def students(request):
-    queryset = Student.objects.all()
+    queryset = Student.objects.all().select_related('group').order_by('id')
 
     fn = request.GET.get('first_name')
     if fn:
@@ -29,8 +30,7 @@ def gen_group(request):
 
 
 def groups(request):
-    queryset = Group.objects.all()
-
+    queryset = Group.objects.all().select_related('curator', 'headman').order_by('id')
     specials = request.GET.get('specialization')
     if specials:
         queryset = queryset.filter(specialization__contains=specials)

@@ -3,8 +3,9 @@ from students.models import Group
 
 
 class Command(BaseCommand):
-    help = 'Generate 100 random students'
+    help = 'Generate 10 random groups'
 
     def handle(self, *args, **options):
-        for _ in range(100):
+
+        for _ in range(10):
             Group.generate_group()

@@ -1,8 +1,10 @@
+from datetime import datetime
+
 from django.forms import ModelForm, Form, EmailField, CharField
-from students.models import Student, Group
 from django.core.mail import send_mail
 from django.conf import settings
-from datetime import datetime
+
+from students.models import Student, Group
 
 
 class StudentsAddForm(ModelForm):

@@ -13,11 +13,12 @@ Students list
     <input name="submit" type="submit">
 </form>
 
-<table border="1" width=100%}>
+<table border="1" width=75% align="center">
     <caption>Students list</caption>
     <tr>
         <th>First name</th>
         <th>Last_name</th>
+        <th>Group</th>
         <th>Birth date</th>
         <th>Edition</th>
     </tr>
@@ -25,6 +26,7 @@ Students list
         <tr>
             <td>{{ student.first_name }}</td>
             <td>{{ student.last_name }}</td>
+            <td>{{ student.group.name }}</td>
             <td>{{ student.birth_date }}</td>
             <td><a href="{% url 'students-edit' student.id %}">Edit the student</a></td>
         </tr>

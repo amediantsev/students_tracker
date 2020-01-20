@@ -1,9 +1,10 @@
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render
-from teachers.models import Teacher
 from django.db.models import Q
-from teachers.forms import TeachersAddForm
 from django.urls import reverse
+
+from teachers.forms import TeachersAddForm
+from teachers.models import Teacher
 
 
 def gen_teacher(request):

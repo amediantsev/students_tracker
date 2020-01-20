@@ -1,7 +1,11 @@
 from datetime import datetime
+import random
+
 from django.db import models
 from faker import Faker
-import random
+
+from teachers.models import Teacher
+
 fake = Faker()
 specializations = ['biology', 'physics', 'chemistry', 'mathematics',
                    'psychology', 'linguistics', 'organizations',
@@ -14,8 +18,12 @@ class Student(models.Model):
     birth_date = models.DateField()
     email = models.EmailField()
     # add avatar TODO
-    telephone = models.CharField(max_length=16)  # clean phone TODO
+    telephone = models.CharField(max_length=128)  # clean phone TODO
     address = models.CharField(max_length=255, null=True, blank=True)
+    group = models.ForeignKey('students.Group',
+                              related_name='+',
+                              null=True, blank=True,
+                              on_delete=models.CASCADE)
 
     def get_info(self):
         return f'{self.first_name}, {self.last_name}, {self.birth_date}'
@@ -34,10 +42,22 @@ class Student(models.Model):
 
 
 class Group(models.Model):
+    name = models.CharField(max_length=64)
     specialization = models.CharField(max_length=64)
     study_start_year = models.CharField(max_length=4)
-    quantity_of_students = models.PositiveIntegerField()
-    # в будущем будет высчитываться автоматически
+    headman = models.ForeignKey('students.Student',
+                                related_name='+',
+                                null=True, blank=True,
+                                on_delete=models.CASCADE)
+    curator = models.ForeignKey('teachers.Teacher',
+                                related_name='+',
+                                null=True, blank=True,
+                                on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        if not self.name:
+            self.name = f'name_{self.__class__.objects.count() + 1}'
+        super().save(*args, **kwargs)
 
     def get_info(self):
         return f'{self.study_start_year}, {self.specialization}'
@@ -46,7 +66,8 @@ class Group(models.Model):
     def generate_group(cls):
         group = cls(specialization=random.choice(specializations),
                     study_start_year=random.randrange(2000, 2019),
-                    quantity_of_students=random.randrange(1, 999),
+                    headman=random.choice(list(Student.objects.all())),
+                    curator=random.choice(list(Teacher.objects.all())),
                     )
 
         group.save()
