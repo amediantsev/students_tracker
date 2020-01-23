@@ -85,16 +85,6 @@ WSGI_APPLICATION = 'students_tracker.wsgi.application'
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'hillel',
-        'USER': 'me',
-        'PASSWORD': 'password',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
-}
 
 
 # Password validation
@@ -146,3 +136,8 @@ EMAIL_HOST_PASSWORD = 'qwerty123456qwerty'
 INTERNAL_IP = [
     '127.0.0.1'
 ]
+
+try:
+    from students_tracker.settings_local import *
+except ImportError:
+    print('Settings_local module not found!\n'*5)
