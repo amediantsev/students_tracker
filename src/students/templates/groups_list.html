@@ -13,17 +13,23 @@ Groups list
     <input name="submit" type="submit">
 </form>
 
-<table border="1" width=100%}>
+<table border="1" width=75% align="center">
     <caption>Groups list</caption>
     <tr>
+        <th>Name</th>
         <th>Specialization</th>
         <th>Study start year</th>
+        <th>Curator</th>
+        <th>Headman</th>
         <th>Edition</th>
     </tr>
     {% for group in groups_list %}
         <tr>
+            <td>{{ group.name }}</td>
             <td>{{ group.specialization }}</td>
             <td>{{ group.study_start_year }}</td>
+            <td>{{ group.curator.first_name }} {{ group.curator.last_name }}</td>
+            <td>{{ group.headman.first_name }} {{ group.headman.last_name }}</td>
             <td><a href="{% url 'groups-edit' group.id %}">Edit the group</a></td>
         </tr>
     {% endfor %}
