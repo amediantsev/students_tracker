@@ -28,3 +28,6 @@ class Teacher(models.Model):
                       )
         teacher.save()
         return teacher
+
+    def __str__(self):
+        return f'{self.academic_degree} {self.first_name} {self.last_name}'

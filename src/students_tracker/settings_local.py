@@ -8,3 +8,6 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+EMAIL_HOST_USER = 'testtestapp454545@gmail.com'
+EMAIL_HOST_PASSWORD = 'qwerty123456qwerty'
