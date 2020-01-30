@@ -16,6 +16,7 @@ Teachers list
 <table border="1" width=75% align="center">
     <caption>Teachers list</caption>
     <tr>
+        <th>Degree</th>
         <th>First name</th>
         <th>Last_name</th>
         <th>Email</th>
@@ -23,6 +24,7 @@ Teachers list
     </tr>
     {% for teacher in teachers_list %}
         <tr>
+            <td>{{ teacher.academic_degree }}</td>
             <td>{{ teacher.first_name }}</td>
             <td>{{ teacher.last_name }}</td>
             <td>{{ teacher.email }}</td>
