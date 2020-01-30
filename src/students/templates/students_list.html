@@ -26,7 +26,7 @@ Students list
         <tr>
             <td>{{ student.first_name }}</td>
             <td>{{ student.last_name }}</td>
-            <td>{{ student.group.name }}</td>
+            <td>{{ student.group }}</td>
             <td>{{ student.birth_date }}</td>
             <td><a href="{% url 'students-edit' student.id %}">Edit the student</a></td>
         </tr>

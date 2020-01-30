@@ -1,13 +1,15 @@
 from django.contrib import admin
 
 from students.models import Student, Group
+from students.forms import StudentAdminForm
 
 
 class StudentAdmin(admin.ModelAdmin):
-    readonly_fields = ('email', )
-    list_display = ('id', 'first_name', 'last_name', 'email')
+    # readonly_fields = ('email', )
+    list_display = ('id', 'first_name', 'last_name', 'email', 'birth_date', 'telephone', 'address', 'group')
     list_select_related = ('group',)
-    list_per_page = 20
+    list_per_page = 40
+    form = StudentAdminForm
 
     def get_readonly_fields(self, request, obj=None):
         readonly_fields = super().get_readonly_fields(request, obj)

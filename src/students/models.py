@@ -6,6 +6,7 @@ from faker import Faker
 
 from teachers.models import Teacher
 
+
 fake = Faker()
 specializations = ['biology', 'physics', 'chemistry', 'mathematics',
                    'psychology', 'linguistics', 'organizations',
@@ -13,12 +14,12 @@ specializations = ['biology', 'physics', 'chemistry', 'mathematics',
 
 
 class Student(models.Model):
-    first_name = models.CharField(max_length=20)
-    last_name = models.CharField(max_length=20)
+    first_name = models.CharField(max_length=64)
+    last_name = models.CharField(max_length=64)
     birth_date = models.DateField()
     email = models.EmailField()
     # add avatar TODO
-    telephone = models.CharField(max_length=128)  # clean phone TODO
+    telephone = models.CharField(max_length=128, unique=True)
     address = models.CharField(max_length=255, null=True, blank=True)
     group = models.ForeignKey('students.Group',
                               related_name='+',
@@ -82,3 +83,6 @@ class Group(models.Model):
 
     def __str__(self):
         return f'{self.name} {self.specialization} (curator: {self.curator})'
+
+
+import students.signals

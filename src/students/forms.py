@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from django.forms import ModelForm, Form, EmailField, CharField
+from django.forms import ModelForm, Form,\
+    EmailField, CharField, ValidationError
 from django.core.mail import send_mail
 from django.conf import settings
 
@@ -12,6 +13,21 @@ class StudentsAddForm(ModelForm):
     class Meta:
         model = Student
         fields = '__all__'
+        list_select_related = ['curator', ]
+
+    def clean_email(self):
+        email = self.instance.email
+        email_exists = Student.objects. \
+            filter(email__iexact=email). \
+            exclude(email__iexact=self.instance.email) \
+            .exists()
+        if email_exists:
+            raise ValidationError(f'{email} is already used!')
+        return email
+
+
+class StudentAdminForm(StudentsAddForm):
+    pass
 
 
 class ContactForm(Form):
