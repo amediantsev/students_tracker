@@ -8,17 +8,17 @@ fake = Faker()
 
 class Teacher(models.Model):
     DEGREE_CHOICES = [
-        ('1', 'Master'),
-        ('2', 'Ph.D.'),
-        ('3', 'M.D.'),
-        ('4', 'J.D.'),
+        ('Master', 'Master'),
+        ('Ph.D', 'Ph.D.'),
+        ('M.D.', 'M.D.'),
+        ('J.D.', 'J.D.'),
     ]
 
     first_name = models.CharField(max_length=65)
     last_name = models.CharField(max_length=65)
     academic_degree = models.CharField(max_length=64, choices=DEGREE_CHOICES,
                                        default=None, null=True, blank=True)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     # add avatar TODO
     telephone = models.CharField(max_length=64, unique=True)  # clean phone TODO
 
