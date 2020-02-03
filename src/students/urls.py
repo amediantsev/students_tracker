@@ -13,4 +13,5 @@ urlpatterns = [
     path('gr_edit/<int:pk>/', groups_edit, name='groups-edit'),
     path('st_edit/<int:pk>/', students_edit, name='students-edit'),
     path('contact/', contact, name='contact'),
+    path('reg/', Registration.as_view(), name='students-reg'),
 ]

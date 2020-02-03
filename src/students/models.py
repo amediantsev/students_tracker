@@ -2,6 +2,7 @@ from datetime import datetime
 import random
 
 from django.db import models
+from django.contrib.auth.models import User
 from faker import Faker
 
 from teachers.models import Teacher
@@ -50,8 +51,21 @@ class Student(models.Model):
 
 
 class Group(models.Model):
+    SPEC_CHOICES = [
+        ('biology', 'biology'),
+        ('physics', 'physics'),
+        ('chemistry', 'chemistry'),
+        ('mathematics', 'mathematics'),
+        ('psychology', 'psychology'),
+        ('linguistics', 'linguistics'),
+        ('organizations', 'organizations'),
+        ('computer_science', 'computer_science'),
+        ('history', 'history'),
+    ]
+
     name = models.CharField(max_length=64)
-    specialization = models.CharField(max_length=64)
+    specialization = models.CharField(max_length=64, choices=SPEC_CHOICES,
+                                       default=None, null=True, blank=True)
     study_start_year = models.CharField(max_length=4)
     headman = models.ForeignKey('students.Student',
                                 related_name='+',
@@ -72,7 +86,7 @@ class Group(models.Model):
 
     @classmethod
     def generate_group(cls):
-        group = cls(specialization=random.choice(specializations),
+        group = cls(specialization=random.choice(Group.SPEC_CHOICES)[1],
                     study_start_year=random.randrange(2000, 2019),
                     headman=random.choice(list(Student.objects.all())),
                     curator=random.choice(list(Teacher.objects.all())),
