@@ -1,9 +1,11 @@
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render
 from django.urls import reverse
+from django.contrib.auth.forms import UserCreationForm
+from django.views.generic.edit import FormView
 
 from students.models import Student, Group
-from students.forms import StudentsAddForm, ContactForm, GroupsAddForm
+from students.forms import StudentsAddForm, GroupsAddForm, ContactForm, RegForm
 
 
 def gen_stud(request):
@@ -21,38 +23,6 @@ def students(request):
     return render(request,
                   'students_list.html',
                   context={'students': queryset}
-                  )
-
-
-def gen_group(request):
-    response = Group.generate_group()
-    return HttpResponse(response.get_info())
-
-
-def groups(request):
-    queryset = Group.objects.all().select_related('curator', 'headman').order_by('id')
-    specials = request.GET.get('specialization')
-    if specials:
-        queryset = queryset.filter(specialization__contains=specials)
-
-    return render(request,
-                  'groups_list.html',
-                  context={'groups_list': queryset}
-                  )
-
-
-def groups_add(request):
-    if request.method == 'POST':
-        form = GroupsAddForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('groups'))
-    else:
-        form = GroupsAddForm()
-
-    return render(request,
-                  'groups_add.html',
-                  context={'form': form}
                   )
 
 
@@ -93,6 +63,49 @@ def students_edit(request, pk):
                   )
 
 
+class Registration(FormView):
+    form_class = RegForm
+
+    success_url = "/community/st_list/"
+
+    template_name = "students_reg.html"
+
+    def form_valid(self, form):
+        form.save()
+
+        return super(Registration, self).form_valid(form)
+
+    def form_invalid(self, form):
+        return super(Registration, self).form_invalid(form)
+
+
+def groups(request):
+    queryset = Group.objects.all().select_related('curator', 'headman').order_by('id')
+    specials = request.GET.get('specialization')
+    if specials:
+        queryset = queryset.filter(specialization__contains=specials)
+
+    return render(request,
+                  'groups_list.html',
+                  context={'groups_list': queryset}
+                  )
+
+
+def groups_add(request):
+    if request.method == 'POST':
+        form = GroupsAddForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('groups'))
+    else:
+        form = GroupsAddForm()
+
+    return render(request,
+                  'groups_add.html',
+                  context={'form': form}
+                  )
+
+
 def groups_edit(request, pk):
     try:
         group = Group.objects.get(id=pk)
@@ -113,6 +126,11 @@ def groups_edit(request, pk):
                       'pk': pk
                   }
                   )
+
+
+def gen_group(request):
+    response = Group.generate_group()
+    return HttpResponse(response.get_info())
 
 
 def contact(request):

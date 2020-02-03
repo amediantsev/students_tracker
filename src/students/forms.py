@@ -1,14 +1,15 @@
 from datetime import datetime
 
-from django.forms import ModelForm, Form,\
-    EmailField, CharField, ValidationError
-from django.core.mail import send_mail
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.conf import settings
 
 from students.models import Student, Group
+from students.tasks import send_email_async
 
 
-class StudentsAddForm(ModelForm):
+class StudentsAddForm(forms.ModelForm):
 
     class Meta:
         model = Student
@@ -22,18 +23,35 @@ class StudentsAddForm(ModelForm):
             exclude(email__iexact=self.instance.email) \
             .exists()
         if email_exists:
-            raise ValidationError(f'{email} is already used!')
+            raise forms.ValidationError(f'{email} is already used!')
         return email
+
+
+class RegForm(UserCreationForm):
+    email = forms.EmailField(max_length=200)
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')
+
+    def save(self):
+        data = self.cleaned_data
+        subject = 'Confirmation of registration'
+        message = 'Hello, buddy'
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = [data['email']]
+        send_email_async.delay(subject, message, email_from, recipient_list)
+        super(RegForm, self).save(self)
 
 
 class StudentAdminForm(StudentsAddForm):
     pass
 
 
-class ContactForm(Form):
-    email = EmailField()
-    subject = CharField()
-    text = CharField()
+class ContactForm(forms.Form):
+    email = forms.EmailField()
+    subject = forms.CharField()
+    text = forms.CharField()
 
     def save(self):
         data = self.cleaned_data
@@ -42,7 +60,7 @@ class ContactForm(Form):
         message = data['text']
         email_from = data['email']
         recipient_list = [settings.EMAIL_HOST_USER]
-        send_mail(subject, message, email_from, recipient_list)
+        send_email_async.delay(subject, message, email_from, recipient_list)
         with open('emails_logs.txt', 'a') as file:
             file.write(str(datetime.now()) +
                        '\nFrom: ' + email_from +
@@ -52,7 +70,7 @@ class ContactForm(Form):
                        )
 
 
-class GroupsAddForm(ModelForm):
+class GroupsAddForm(forms.ModelForm):
 
     class Meta:
         model = Group
