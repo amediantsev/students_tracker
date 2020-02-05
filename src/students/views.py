@@ -1,7 +1,6 @@
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render
 from django.urls import reverse
-from django.contrib.auth.forms import UserCreationForm
 from django.views.generic.edit import FormView
 
 from students.models import Student, Group
