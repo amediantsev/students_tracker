@@ -125,7 +125,7 @@ def groups_edit(request, pk):
                       'pk': pk
                   }
                   )
-
+ 
 
 def gen_group(request):
     response = Group.generate_group()
