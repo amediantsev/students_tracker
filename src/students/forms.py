@@ -27,21 +27,39 @@ class StudentsAddForm(forms.ModelForm):
         return email
 
 
-class RegForm(UserCreationForm):
-    email = forms.EmailField(max_length=200)
+# class RegForm(UserCreationForm):
+#     email = forms.EmailField(max_length=200)
+#
+#     class Meta:
+#         model = User
+#         fields = ('username', 'email', 'password1', 'password2')
+#
+#     def save(self):
+#         data = self.cleaned_data
+#         subject = 'Confirmation of registration'
+#         message = 'Hello, buddy'
+#         email_from = settings.EMAIL_HOST_USER
+#         recipient_list = [data['email']]
+#         send_email_async.delay(subject, message, email_from, recipient_list)
+#         super(RegForm, self).save(self)
+
+
+class UserRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2')
+        fields = ('username', 'email', 'password',)
 
-    def save(self):
-        data = self.cleaned_data
-        subject = 'Confirmation of registration'
-        message = 'Hello, buddy'
-        email_from = settings.EMAIL_HOST_USER
-        recipient_list = [data['email']]
-        send_email_async.delay(subject, message, email_from, recipient_list)
-        super(RegForm, self).save(self)
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.set_password(self.cleaned_data)
+        super().save(commit)
+
+
+class UserLoginForm(forms.Form):
+
+    username = forms.CharField()
+    password = forms.CharField()
 
 
 class StudentAdminForm(StudentsAddForm):

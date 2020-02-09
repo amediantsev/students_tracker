@@ -2,7 +2,6 @@ from datetime import datetime
 import random
 
 from django.db import models
-from django.contrib.auth.models import User
 from faker import Faker
 
 from teachers.models import Teacher
@@ -101,9 +100,9 @@ class Group(models.Model):
 
 class Logger(models.Model):
     path = models.CharField(max_length=255)
-    method = models.CharField(max_length=10)
-    time_delta = models.CharField(max_length=255)
-    user_id = models.IntegerField()
-    created = models.DateTimeField(auto_now=True)
+    method = models.CharField(max_length=10)     # TODO choices
+    time_delta = models.CharField(max_length=255)   # TODO DecimalField
+    user_id = models.IntegerField(null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
 
 import students.signals

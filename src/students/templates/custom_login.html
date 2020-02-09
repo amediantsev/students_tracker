@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Registration
+Log in
 {% endblock title %}
 
 {% block content %}
-Registration
-<form action="{% url 'reg' %}" method="post">
+Log in
+<form action="{% url 'custom-login' %}" method="post">
     {% csrf_token %}
     {{form.as_p}}
-    <input type="submit" value="Registrate">
+    <input type="submit" value="Log in">
 </form>
 {% endblock content %}

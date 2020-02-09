@@ -1,10 +1,14 @@
+from django.contrib.auth import login, authenticate
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic.edit import FormView
 
 from students.models import Student, Group
-from students.forms import StudentsAddForm, GroupsAddForm, ContactForm, RegForm
+from students.forms import StudentsAddForm,\
+    GroupsAddForm,\
+    ContactForm,\
+    UserRegistrationForm,\
+    UserLoginForm
 
 
 def gen_stud(request):
@@ -62,20 +66,20 @@ def students_edit(request, pk):
                   )
 
 
-class Registration(FormView):
-    form_class = RegForm
-
-    success_url = "/community/st_list/"
-
-    template_name = "students_reg.html"
-
-    def form_valid(self, form):
-        form.save()
-
-        return super(Registration, self).form_valid(form)
-
-    def form_invalid(self, form):
-        return super(Registration, self).form_invalid(form)
+# class Registration(FormView):
+#     form_class = RegForm
+#
+#     success_url = "/community/st_list/"
+#
+#     template_name = "students_reg.html"
+#
+#     def form_valid(self, form):
+#         form.save()
+#
+#         return super(Registration, self).form_valid(form)
+#
+#     def form_invalid(self, form):
+#         return super(Registration, self).form_invalid(form)
 
 
 def groups(request):
@@ -143,5 +147,43 @@ def contact(request):
 
     return render(request,
                   'contact.html',
+                  context={'form': form}
+                  )
+
+
+def reg(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('students'))
+    else:
+        form = UserRegistrationForm()
+
+    return render(request,
+                  'students_reg.html',
+                  context={'form': form}
+                  )
+
+
+def custom_login(request):
+    user_form = UserLoginForm
+
+    if request.method == 'POST':
+        form = user_form(request.POST)
+        if form.is_valid():
+            from pdb import set_trace
+            # set_trace()
+            user = authenticate(request,
+                                username=form.cleaned_data['username'],
+                                password=form.cleaned_data['password']
+                                )
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            return HttpResponseRedirect(reverse('students'))
+    else:
+        form = user_form
+
+    return render(request,
+                  'custom_login.html',
                   context={'form': form}
                   )
