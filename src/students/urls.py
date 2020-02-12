@@ -18,4 +18,5 @@ urlpatterns = [
 
     path('reg/', reg, name='reg'),
     path('login/', custom_login, name='custom-login'),
+    path('logout/', log_out, name='logout'),
 ]
