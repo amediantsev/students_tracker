@@ -1,15 +1,15 @@
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.models import AnonymousUser, User
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render
 from django.urls import reverse
 
-from students.models import Student, Group
-from students.forms import StudentsAddForm,\
-    GroupsAddForm,\
-    ContactForm,\
-    UserRegistrationForm,\
-    UserLoginForm
+from students.models import Student, Group, ConfirmationKey
+from students.forms import StudentsAddForm, \
+    GroupsAddForm, \
+    ContactForm, \
+    UserRegistrationForm, \
+    UserLoginForm, ConfirmationForm
 
 
 def gen_stud(request):
@@ -20,8 +20,7 @@ def gen_stud(request):
 def students(request):
     queryset = Student.objects.all().select_related('group').order_by('id')
     user = request.user
-    # from pdb import set_trace
-    # set_trace()
+
     fn = request.GET.get('first_name')
     if fn:
         queryset = queryset.filter(first_name__contains=fn)
@@ -167,12 +166,35 @@ def reg(request):
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('students'))
+            return HttpResponseRedirect(reverse('confirmation'))
     else:
         form = UserRegistrationForm()
 
     return render(request,
                   'students_reg.html',
+                  context={'form': form}
+                  )
+
+
+def confirmation(request):
+    if request.method == 'POST':
+        form = ConfirmationForm(request.POST)
+        if form.is_valid():
+            try:
+                userkey = ConfirmationKey.objects.get(key=form.cleaned_data['Enter_the_code_here'])
+                user_email = userkey.user_email
+                user = User.objects.get(email=user_email)
+                user.is_active = True
+                user.save()
+                userkey.delete()
+            except:
+                return HttpResponseRedirect(reverse('confirmation'))
+            return HttpResponseRedirect(reverse('students'))
+    else:
+        form = ConfirmationForm()
+
+    return render(request,
+                  'confirmation.html',
                   context={'form': form}
                   )
 

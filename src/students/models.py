@@ -105,4 +105,9 @@ class Logger(models.Model):
     user_id = models.IntegerField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
 
+
+class ConfirmationKey(models.Model):
+    user_email = models.CharField(max_length=255)
+    key = models.IntegerField(null=True, blank=True)
+
 import students.signals
