@@ -99,4 +99,11 @@ class Group(models.Model):
         return f'{self.name} {self.specialization} (curator: {self.curator})'
 
 
+class Logger(models.Model):
+    path = models.CharField(max_length=255)
+    method = models.CharField(max_length=10)
+    time_delta = models.CharField(max_length=255)
+    user_id = models.IntegerField()
+    created = models.DateTimeField(auto_now=True)
+
 import students.signals
