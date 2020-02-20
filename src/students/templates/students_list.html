@@ -5,10 +5,15 @@ Students list
 {% endblock title %}
 
 {% block content %}
-<!--<a href="{% url 'students-add' %}"><input type="button" value=" Sign in "></a>-->
-<a href="{% url 'students-reg' %}"><input type="button" value=" Sign up "></a>
-<a href="{% url 'students-add' %}"><input type="button" value=" Add a student "></a>
 
+{% if anon %}
+<a href="{% url 'custom-login' %}"><input type="button" value=" Sign in "></a>
+<a href="{% url 'reg' %}"><input type="button" value=" Sign up "></a>
+{% else %}
+<p>{{ user }}</p>
+<a href="{% url 'logout' %}"><input type="button" value=" Log out "></a>
+{% endif %}
+<a href="{% url 'students-add' %}"><input type="button" value=" Add a student "></a>
 <h2>Search the student:</h2>
 <form action="{% url 'students' %}" method="get">
     <input name="first_name">

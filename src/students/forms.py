@@ -1,11 +1,12 @@
 from datetime import datetime
+import random
 
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+# from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.conf import settings
 
-from students.models import Student, Group
+from students.models import Student, Group, ConfirmationKey
 from students.tasks import send_email_async
 
 
@@ -27,21 +28,45 @@ class StudentsAddForm(forms.ModelForm):
         return email
 
 
-class RegForm(UserCreationForm):
-    email = forms.EmailField(max_length=200)
+# class RegForm(UserCreationForm):
+#     email = forms.EmailField(max_length=200)
+#
+#     class Meta:
+#         model = User
+#         fields = ('username', 'email', 'password1', 'password2')
+
+
+class UserRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2')
+        fields = ('username', 'email', 'password',)
 
-    def save(self):
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.set_password(self.cleaned_data)
+        instance.is_active = False
+
         data = self.cleaned_data
+        email_code = random.randrange(100000, 999999)
+        ConfirmationKey.objects.create(user_email=data['email'], key=email_code)
         subject = 'Confirmation of registration'
-        message = 'Hello, buddy'
+        message = 'Hello, buddy, it\'s your one-time code: ' + str(email_code) + '\nEnter it in the form'
         email_from = settings.EMAIL_HOST_USER
         recipient_list = [data['email']]
         send_email_async.delay(subject, message, email_from, recipient_list)
-        super(RegForm, self).save(self)
+
+        super().save(commit)
+
+class ConfirmationForm(forms.Form):
+
+    Enter_the_code_here = forms.IntegerField()
+
+
+class UserLoginForm(forms.Form):
+
+    username = forms.CharField()
+    password = forms.CharField()
 
 
 class StudentAdminForm(StudentsAddForm):

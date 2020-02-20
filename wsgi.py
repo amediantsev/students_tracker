@@ -14,7 +14,7 @@ from django.core.wsgi import get_wsgi_application
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'students_tracker.settings')
 
 application = get_wsgi_application()
-# def application(env, start_response):
-#     start_response('200 OK', [('Content-Type', 'text/html')])
-#     return ["<h1 style='color:blue'>Hello There!</h1>"]
-#
+# def application(environ, start_response):
+#     start_response('200 OK', [('Content-Type','text/html')])
+#     return [b"Hello World"]
+

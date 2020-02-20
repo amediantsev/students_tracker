@@ -1,0 +1,17 @@
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+	server_name www.students_tracker.com 127.0.0.1;
+
+    location /static/ {
+        root ~/Projects/students_tracker_students/src;
+    }
+
+
+    location / {
+        include proxy_params;
+        proxy_pass http://127.0.0.1:8000;
+    }
+
+}
