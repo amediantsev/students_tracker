@@ -222,3 +222,10 @@ def custom_login(request):
 def log_out(request):
     logout(request)
     return HttpResponseRedirect(reverse('students'))
+
+
+def handler404(request):
+    return render(request, '404.html', status=404)
+
+def handler500(request):
+    return render(request, '500.html', status=500)
