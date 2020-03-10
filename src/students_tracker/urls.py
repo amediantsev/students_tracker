@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.urls import path, include
 from django.conf.urls import url
-
+from students.views import handler404, handler500
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,3 +33,7 @@ if settings.DEBUG:
     ] + urlpatterns
 
 urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
+
+
+handler404 = handler404
+handler500 = handler500
